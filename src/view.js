@@ -54,79 +54,68 @@ class Plot {
     draw(p, q) {
         p = this.trimLength(p);
         q = this.trimLength(q);
-        var i = this.sortedIndex(p);
+        const i = this.sortedIndex(p);
         p = this.sorted(i, p);
         q = this.sorted(i, q);
         if (this.enforceCircularSymmetryFlag) {
-        var temp = (q[0] + q[q.length - 1]) / 2;
-        q[0] = temp;
-        q[q.length - 1] = temp;
+            const temp = (q[0] + q[q.length - 1]) / 2;
+            q[0] = temp;
+            q[q.length - 1] = temp;
         }
         if (this.shiftQuarterFlag) {
-        p = this.shiftQuarter(p);
-        q = this.shiftQuarter(q);
+            p = this.shiftQuarter(p);
+            q = this.shiftQuarter(q);
         }
         this.setXY(p, q);
         this.plotXYL();
     }
     shiftQuarter(x) {
-        var N = x.length;
-        var N4 = Math.round(N / 4);
-        var cntr = 0;
-        var y = [];
-        for (cntr = 0; cntr < N; cntr++) {
-        y[cntr] = x[cntr];
+        const N = x.length;
+        const N4 = Math.round(N / 4);
+        const y = new Array(N);
+        for (let cntr = 0; cntr < N; cntr++) {
+            y[cntr] = x[cntr];
         }
-        for (cntr = 0; cntr < (N - N4); cntr++) {
-        y[cntr + N4] = x[cntr];
+        for (let cntr = 0; cntr < (N - N4); cntr++) {
+            y[cntr + N4] = x[cntr];
         }
-        for (cntr = (N - N4); cntr < N; cntr++) {
-        y[cntr - (N - N4)] = x[cntr];
+        for (let cntr = (N - N4); cntr < N; cntr++) {
+            y[cntr - (N - N4)] = x[cntr];
         }
         return y;
     }
     sorted(i, p) {
-        var N = p.length;
-        var q = [];
-        var cntr;
-        for (cntr = 0; cntr < N; cntr++) {
-        q[cntr] = p[i[cntr]];
-        }
-        return q;
+        return p.map((x, index)=>p[i[index]]);
     }
     sortedIndex(p) {
-        var N = p.length;
-        var i = [];
-        var temp = 0;
-        var cntr1 = 0;
-        var cntr2 = 0;
-        for (cntr1 = 0; cntr1 < N; cntr1++) {
-        i[cntr1] = cntr1;
+        const N = p.length;
+        const i = new Array(N);
+        let temp = 0;
+        for (let cntr1 = 0; cntr1 < N; cntr1++) {
+            i[cntr1] = cntr1;
         }
-        for (cntr1 = 0; cntr1 < (N - 1); cntr1++) {
-        for (cntr2 = cntr1 + 1; cntr2 < N; cntr2++) {
-            if (p[cntr1] > p[cntr2]) {
-            temp = p[cntr1];
-            p[cntr1] = p[cntr2];
-            p[cntr2] = temp;
-            temp = i[cntr1];
-            i[cntr1] = i[cntr2];
-            i[cntr2] = temp;
+        for (let cntr1 = 0; cntr1 < (N - 1); cntr1++) {
+            for (let cntr2 = cntr1 + 1; cntr2 < N; cntr2++) {
+                if (p[cntr1] > p[cntr2]) {
+                    temp = p[cntr1];
+                    p[cntr1] = p[cntr2];
+                    p[cntr2] = temp;
+                    temp = i[cntr1];
+                    i[cntr1] = i[cntr2];
+                    i[cntr2] = temp;
+                }
             }
-        }
         }
         return i;
     }
     plotXYL() {
-        var N = this.x.length;
-        if (N < 2) {
-        return;
-        }
+        const N = this.x.length;
+        if (N < 2) return;
         this.initialize(this.ctx);
         this.ctx.beginPath();
         this.ctx.moveTo(this.x[0], this.y[0]);
-        for (var cntr = 1; cntr < N; cntr++) {
-        this.ctx.lineTo(this.x[cntr], this.y[cntr]);
+        for (let cntr = 1; cntr < N; cntr++) {
+            this.ctx.lineTo(this.x[cntr], this.y[cntr]);
         }
         this.addLimits();
         this.ctx.stroke();
@@ -143,60 +132,53 @@ class Plot {
         this.ctx.fillText(this.limitDP(this.qMax), this.origin.x - this.originOffset, this.canvasYLimits[0] + 1 * this.originOffset);
     }
     limitDP(x) {
-        if (("" + x).includes(".")) {
+        const xString = x.toString();
+        if (!xString.includes(".")) return xString;
         x = "" + Math.round(100 * x) / 100;
         if (x.includes(".")) {
             x = x.substring(0, Math.min(x.length, x.indexOf(".") + 3));
         }
-        }
-        return "" + x;
+        return x;
     }
     setXY(p, q) {
         this.resetXY();
-        var length = p.length;
+        const length = p.length;
         this.pMin = this.getMin(p);
         this.pMax = this.getMax(p);
         this.qMin = this.getMin(q);
         this.qMax = this.getMax(q);
-        var temp = 0;
-        for (var cntr = 0; cntr < length; cntr++) {
-        this.x[cntr] = this.origin.x +
-                        (this.minXY.x + (this.maxXY.x - this.minXY.x) * (p[cntr] - this.pMin) / (this.pMax - this.pMin));
-        this.y[cntr] = this.origin.y - 
-                        (this.minXY.y + (this.maxXY.y - this.minXY.y) * (q[cntr] - this.qMin) / (this.qMax - this.qMin));
-        }
+
+        const A1 = this.origin.x + this.minXY.x;
+        const A2 = (this.maxXY.x - this.minXY.x) / (this.pMax - this.pMin);
+        this.x = p.map(v => A1 + A2 * (v - this.pMin));
+
+        const B1 = this.origin.y - this.minXY.y;
+        const B2 = (this.maxXY.y - this.minXY.y) / (this.qMax - this.qMin);
+        this.y = q.map(v => B1 - B2 * (v - this.qMin));
     }
     getMin(x) {
-        var min = x[0];
-        var length = x.length;
-        for (var cntr = 1; cntr < length; cntr++) {
-        if (min > x[cntr]) {
-            min = x[cntr];
-        }
+        let min = x[0];
+        const length = x.length;
+        for (let cntr = 1; cntr < length; cntr++) {
+            if (min > x[cntr]) {
+                min = x[cntr];
+            }
         }
         return min;
     }
     getMax(x) {
-        var max = x[0];
-        var length = x.length;
-        for (var cntr = 1; cntr < length; cntr++) {
-        if (max < x[cntr]) {
-            max = x[cntr];
-        }
+        let max = x[0];
+        const length = x.length;
+        for (let cntr = 1; cntr < length; cntr++) {
+            if (max < x[cntr]) {
+                max = x[cntr];
+            }
         }
         return max;
     }
     trimLength(a) {
-        var aLength = a.length;
-        if (aLength <= this.maxLength) {
-        return a;
-        }
-        var a_ = [];
-        for (var cntr = 0; cntr < this.maxLength; cntr++) {
-        a_[cntr] = a[cntr + aLength - this.maxLength];
-        }
-        a = a_;
-        return a;
+        const offset = a.length - this.maxLength;
+        return (offset <= 0)? a:a.map((x,index)=>a[index + offset]);
     }
 }
 
