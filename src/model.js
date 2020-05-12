@@ -113,7 +113,7 @@
 		  }
 	  }
 	  getMinT1() {
-		const minT1 = 2;
+		let minT1 = 2;
 		for (let n = 0; n < this.nEBs; n++) {
 		  if (this.t2[n] >= this.t1[n]) {
 			if (minT1 > this.t1[n]) {
