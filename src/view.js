@@ -1,24 +1,24 @@
 class Utilities {
-	d$V(x, v) {
+    d$V(x, v) {
         this.d$(x).innerHTML = v;
-	}
+    }
 
-	d$(x) {
+    d$(x) {
         return document.getElementById(x);
-	}
+    }
 
-	Log(x) {
+    Log(x) {
         this.d$V("Log", x + "<br />" + this.d$("Log").innerHTML);
-	}
+    }
 
-	limitDP(x) {
+    limitDP(x) {
         if (x.toString().includes(".")) {
             x = (Math.round(100 * x) / 100).toString();
             if (x.includes(".")) x = x.substring(0, Math.min(x.length, x.indexOf(".") + 3));
-		}
+        }
         return x.toString();
-	  }
-	}
+      }
+    }
 
 class Plot {
     constructor(canvasPlot) {
@@ -195,13 +195,13 @@ class Plot {
 
 class View {
     constructor() {
-		const utilities = new Utilities();
-		this.myCanvas = utilities.d$("myCanvas");
-		this.ctx = this.myCanvas.getContext("2d");
-		this.ctx.lineWidth = 2;
-		
-		const cPlot = utilities.d$("plotCanvas");
-		this.plot = new Plot(cPlot);
+        const utilities = new Utilities();
+        this.myCanvas = utilities.d$("myCanvas");
+        this.ctx = this.myCanvas.getContext("2d");
+        this.ctx.lineWidth = 2;
+
+        const cPlot = utilities.d$("plotCanvas");
+        this.plot = new Plot(cPlot);
     }
 
     reset() {
@@ -212,9 +212,5 @@ class View {
 
     initialize(ctx) {
         this.plot.initialize(ctx? ctx:this.ctx);
-    }
-
-    save() {
-		let fullQuality = this.myCanvas.toDataURL("image/gif", 1.0);
     }
 }
