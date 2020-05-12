@@ -114,8 +114,7 @@ class Controller {
 
 class SpindleRenderer {
     static render(ctx, spindle) {
-        spindle.arcArray.forEach(arc=>ctx = TrackMTRenderer.render(ctx, arc));
-        return ctx;
+        spindle.arcArray.forEach(arc=> TrackMTRenderer.render(ctx, arc));
     }
 }
 
@@ -133,13 +132,13 @@ class TrackMTRenderer {
     render(ctx) {
         const alphaMT = 0.2;
         const alphaEB = 1.0;
-        ctx = this.renderMT(ctx, alphaMT);
+        this.renderMT(ctx, alphaMT);
         const strokeStyleOriginal = ctx.strokeStyle;
         const ebs = this.trackMT.ebs;
         const nEBs = this.trackMT.nEBs;
         for (let cntr = 0; cntr < nEBs; cntr++) {
             ctx.strokeStyle = this.getColor(ebs.direction[cntr]);
-            ctx = this.renderEB(ctx, ebs.t1[cntr], ebs.t2[cntr], alphaEB);
+            this.renderEB(ctx, ebs.t1[cntr], ebs.t2[cntr], alphaEB);
         }
         ctx.strokeStyle = strokeStyleOriginal;
         return ctx;
@@ -182,7 +181,7 @@ class Animator {
         this.view.reset();
         this.spindle = this.getSpindle(geometry);
         this.showValues(geometry);
-        this.view.ctx = SpindleRenderer.render(this.view.ctx, this.spindle);
+        SpindleRenderer.render(this.view.ctx, this.spindle);
         this.timerID = this.getTimerID(this.view.ctx, this.view.plot, geometry);
     }
 
@@ -204,7 +203,7 @@ class Animator {
     drawAll(instance) {
         instance.view.initialize();
         instance.spindle.update();
-        instance.view.ctx = SpindleRenderer.render(instance.view.ctx, instance.spindle);
+        SpindleRenderer.render(instance.view.ctx, instance.spindle);
         instance.view.plot.draw(instance.spindle.orientations, instance.spindle.nOrientations);
     }
 
