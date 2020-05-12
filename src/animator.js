@@ -9,7 +9,7 @@ class Animator {
         this.view.reset();
         this.spindle = this.getSpindle(geometry);
         this.showValues(geometry);
-        this.view.ctx = this.spindle.render(this.view.ctx);
+        this.view.ctx = SpindleRenderer.render(this.view.ctx, this.spindle);
         this.timerID = this.getTimerID(this.view.ctx, this.view.plot, geometry);
     }
 
@@ -31,7 +31,7 @@ class Animator {
     drawAll(instance) {
         instance.view.initialize();
         instance.spindle.update();
-        instance.view.ctx = instance.spindle.render(instance.view.ctx);
+        instance.view.ctx = SpindleRenderer.render(instance.view.ctx, instance.spindle);
         instance.view.plot.draw(instance.spindle.orientations, instance.spindle.nOrientations);
     }
 

@@ -268,11 +268,14 @@
 			}
 		  });
 		}
-		render(ctx) {
-			this.arcArray.forEach(arc=>ctx = arc.render(ctx));
-			return ctx;
-		}
 		getComplementaryAngle(x) {
 		  return -x + ((x > 0)? 180:-180);
+		}
+	}
+
+	class SpindleRenderer {
+		static render(ctx, spindle) {
+			spindle.arcArray.forEach(arc=>ctx = arc.render(ctx));
+			return ctx;
 		}
 	}
