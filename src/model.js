@@ -163,37 +163,6 @@
 	  update() {
 		this.ebs.update();
 	  }
-	  render(ctx) {
-		const alphaMT = 0.2;
-		const alphaEB = 1.0;
-		ctx = this.renderMT(ctx, alphaMT);
-		const strokeStyleOriginal = ctx.strokeStyle;
-		for (let cntr = 0; cntr < this.nEBs; cntr++) {
-		  ctx.strokeStyle = (this.ebs.direction[cntr] > 0)? "#FF3300":"#00BBFF";
-		  ctx = this.renderEB(ctx, this.ebs.t1[cntr], this.ebs.t2[cntr], alphaEB);
-		}
-		ctx.strokeStyle = strokeStyleOriginal;
-		return ctx;
-	  }
-	  renderEB(ctx, t1, t2, alpha) {
-		const q1 = this.getP(t1);
-		const q2 = this.getP(t2);
-		const qM = this.getP((t1 + t2) / 2);
-		ctx.globalAlpha = alpha;
-		ctx.beginPath();
-		ctx.moveTo(q1.x, q1.y);
-		ctx.quadraticCurveTo(qM.x, qM.y, q2.x, q2.y);
-		ctx.stroke();
-		return ctx;
-	  }
-	  renderMT(ctx, alpha) {
-		ctx.globalAlpha = alpha;
-		ctx.beginPath();
-		ctx.moveTo(this.Points[0].x, this.Points[0].y);
-		ctx.quadraticCurveTo(this.Points[1].x, this.Points[1].y, this.Points[2].x, this.Points[2].y);
-		ctx.stroke();
-		return ctx;
-	  }
 	  getH(P1, P2, thetaDeg) {
 		const dH = new Point(0, 0);
 		const thetaRad = (Math.PI / 180) * thetaDeg;
@@ -273,9 +242,53 @@
 		}
 	}
 
-	class SpindleRenderer {
-		static render(ctx, spindle) {
-			spindle.arcArray.forEach(arc=>ctx = arc.render(ctx));
-			return ctx;
-		}
+class SpindleRenderer {
+	static render(ctx, spindle) {
+		spindle.arcArray.forEach(arc=>ctx = TrackMTRenderer.render(ctx, arc));
+		return ctx;
 	}
+}
+
+class TrackMTRenderer {
+	constructor(trackMT) {
+		this.trackMT = trackMT;
+	}
+
+	static render(ctx, trackMT) {
+		return new TrackMTRenderer(trackMT).render(ctx);
+	}
+
+	render(ctx) {
+		const alphaMT = 0.2;
+		const alphaEB = 1.0;
+		ctx = this.renderMT(ctx, alphaMT);
+		const strokeStyleOriginal = ctx.strokeStyle;
+		for (let cntr = 0; cntr < this.trackMT.nEBs; cntr++) {
+			ctx.strokeStyle = (this.trackMT.ebs.direction[cntr] > 0)? "#FF3300":"#00BBFF";
+			ctx = this.renderEB(ctx, this.trackMT.ebs.t1[cntr], this.trackMT.ebs.t2[cntr], alphaEB);
+		}
+		ctx.strokeStyle = strokeStyleOriginal;
+		return ctx;
+	}
+	
+	renderEB(ctx, t1, t2, alpha) {
+		const q1 = this.trackMT.getP(t1);
+		const q2 = this.trackMT.getP(t2);
+		const qM = this.trackMT.getP((t1 + t2) / 2);
+		ctx.globalAlpha = alpha;
+		ctx.beginPath();
+		ctx.moveTo(q1.x, q1.y);
+		ctx.quadraticCurveTo(qM.x, qM.y, q2.x, q2.y);
+		ctx.stroke();
+		return ctx;
+	}
+	
+	renderMT(ctx, alpha) {
+		ctx.globalAlpha = alpha;
+		ctx.beginPath();
+		ctx.moveTo(this.trackMT.Points[0].x, this.trackMT.Points[0].y);
+		ctx.quadraticCurveTo(this.trackMT.Points[1].x, this.trackMT.Points[1].y, this.trackMT.Points[2].x, this.trackMT.Points[2].y);
+		ctx.stroke();
+		return ctx;
+	}
+}
