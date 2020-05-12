@@ -1,23 +1,24 @@
 class Utilities {
 	d$V(x, v) {
-	  this.d$(x).innerHTML = v;
+        this.d$(x).innerHTML = v;
 	}
+
 	d$(x) {
-	  return document.getElementById(x);
+        return document.getElementById(x);
 	}
+
 	Log(x) {
-	  this.d$V("Log", x + "<br />" + this.d$("Log").innerHTML);
+        this.d$V("Log", x + "<br />" + this.d$("Log").innerHTML);
 	}
+
 	limitDP(x) {
-	  if (("" + x).includes(".")) {
-		x = "" + Math.round(100 * x) / 100;
-		if (x.includes(".")) {
-		  x = x.substring(0, Math.min(x.length, x.indexOf(".") + 3));
+        if (x.toString().includes(".")) {
+            x = (Math.round(100 * x) / 100).toString();
+            if (x.includes(".")) x = x.substring(0, Math.min(x.length, x.indexOf(".") + 3));
 		}
+        return x.toString();
 	  }
-	  return "" + x;
 	}
-}
 
 class Plot {
     constructor(canvasPlot) {
@@ -31,17 +32,26 @@ class Plot {
         this.canvasYLimits = [this.originOffset, this.canvasHeight - 1 - this.originOffset];
         this.origin = new Point(this.canvasXLimits[0], this.canvasYLimits[1]);
         this.minXY = new Point(0, 0);
-        this.maxXY = new Point(	this.canvasXLimits[1] - this.canvasXLimits[0],
+        this.maxXY = new Point(
+            this.canvasXLimits[1] - this.canvasXLimits[0],
                                 this.canvasYLimits[1] - this.canvasYLimits[0]
                                 );
+        this.setColors();
         this.resetXY();
     }
-    initialize(ctx) {
-        ctx.fillStyle = "#000000";
-        ctx.fillRect(0, 0, 300, 150);
-        ctx.fillStyle = "#FFFFFF";
-        ctx.strokeStyle="#FFFFFF";
+
+    setColors() {
+        this.BLACK_COLOR = "#000000";
+        this.WHITE_COLOR = "#FFFFFF";
     }
+
+    initialize(ctx) {
+        ctx.fillStyle = this.BLACK_COLOR;
+        ctx.fillRect(0, 0, 300, 150);
+        ctx.fillStyle = this.WHITE_COLOR;
+        ctx.strokeStyle=this.WHITE_COLOR;
+    }
+
     resetXY() {
         this.x = [];
         this.y = [];
@@ -51,6 +61,7 @@ class Plot {
         this.qMax = 0;
         this.maxLength = 1000;
     }
+
     draw(p, q) {
         p = this.trimLength(p);
         q = this.trimLength(q);
@@ -69,6 +80,7 @@ class Plot {
         this.setXY(p, q);
         this.plotXYL();
     }
+
     shiftQuarter(x) {
         const N = x.length;
         const N4 = Math.round(N / 4);
@@ -84,9 +96,11 @@ class Plot {
         }
         return y;
     }
+
     sorted(i, p) {
         return p.map((x, index)=>p[i[index]]);
     }
+
     sortedIndex(p) {
         const N = p.length;
         const i = new Array(N);
@@ -108,6 +122,7 @@ class Plot {
         }
         return i;
     }
+
     plotXYL() {
         const N = this.x.length;
         if (N < 2) return;
@@ -120,6 +135,7 @@ class Plot {
         this.addLimits();
         this.ctx.stroke();
     }
+
     addLimits() {
         this.ctx.font = "15px Arial";
         this.ctx.fillStyle = "#88FFFF";
@@ -131,15 +147,17 @@ class Plot {
         this.ctx.fillText(this.limitDP(this.qMin), this.origin.x - this.originOffset, this.origin.y - this.originOffset);
         this.ctx.fillText(this.limitDP(this.qMax), this.origin.x - this.originOffset, this.canvasYLimits[0] + 1 * this.originOffset);
     }
+
     limitDP(x) {
         const xString = x.toString();
         if (!xString.includes(".")) return xString;
-        x = "" + Math.round(100 * x) / 100;
+        x = (Math.round(100 * x) / 100).toString();
         if (x.includes(".")) {
             x = x.substring(0, Math.min(x.length, x.indexOf(".") + 3));
         }
         return x;
     }
+
     setXY(p, q) {
         this.resetXY();
         const length = p.length;
@@ -156,26 +174,19 @@ class Plot {
         const B2 = (this.maxXY.y - this.minXY.y) / (this.qMax - this.qMin);
         this.y = q.map(v => B1 - B2 * (v - this.qMin));
     }
+
     getMin(x) {
         let min = x[0];
-        const length = x.length;
-        for (let cntr = 1; cntr < length; cntr++) {
-            if (min > x[cntr]) {
-                min = x[cntr];
-            }
-        }
+        x.forEach(p => min = Math.min(min, p));
         return min;
     }
+
     getMax(x) {
         let max = x[0];
-        const length = x.length;
-        for (let cntr = 1; cntr < length; cntr++) {
-            if (max < x[cntr]) {
-                max = x[cntr];
-            }
-        }
+        x.forEach(p => max = Math.max(max, p));
         return max;
     }
+
     trimLength(a) {
         const offset = a.length - this.maxLength;
         return (offset <= 0)? a:a.map((x,index)=>a[index + offset]);
