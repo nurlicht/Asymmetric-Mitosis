@@ -149,7 +149,9 @@
 	}
 
 	class TrackMT {
-	  constructor(P1, P2, thetaDeg, nEBs, geometry) {
+	  constructor(thetaDeg, nEBs, geometry) {
+		const P1 = new Point(geometry.X1, geometry.Y1);
+		const P2 = new Point(geometry.X2, geometry.Y2);
 		this.Points = [];
 		this.Points[0] = P1;
 		this.Points[1] = this.getH(P1, P2, thetaDeg);
@@ -231,12 +233,12 @@
 	}
 
 	class Spindle {
-		constructor(P1, P2, minAngleD, maxAngleD, nAngles, nEBs, geometry) {
+		constructor(nAngles, nEBs, geometry) {
 			this.nMTs = nAngles;
 			this.arcArray = [];
-			this.initializeDirectionData(minAngleD, maxAngleD, nAngles);
+			this.initializeDirectionData(geometry.minAngleD, geometry.maxAngleD, nAngles);
 			for (let cntr = 0; cntr < this.nMTs; cntr++) {
-			  this.arcArray[cntr] = new TrackMT(P1, P2, this.orientations[cntr], nEBs, geometry);
+			  this.arcArray[cntr] = new TrackMT(this.orientations[cntr], nEBs, geometry);
 			  this.updateDirectionData(cntr);
 			}
 		}

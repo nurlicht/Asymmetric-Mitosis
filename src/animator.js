@@ -19,7 +19,7 @@ class Animator {
     }
 
     getSpindle(geometry) {
-        return new Spindle(new Point(geometry.X1, geometry.Y1), new Point(geometry.X2, geometry.Y2), geometry.minAngleD, geometry.maxAngleD, geometry.N, geometry.nEBs, geometry);
+        return new Spindle(geometry.N, geometry.nEBs, geometry);
     }
 
     showValues(geometry) {
