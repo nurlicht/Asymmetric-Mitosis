@@ -1,44 +1,35 @@
-
-class Geometry {
-    constructor() {
-        this.N = 5;
-        this.X1 = 0;
-        this.Y1 = 74;
-        this.X2 = 299;
-        this.Y2 = 74;
-        this.Size = this.X2 - this.X1 + 1;
-        this.nEBs = 10;
-        this.fps = 8;
-        this.Asymmetry = [0, 0, 0.20, 0, 0];
-        this.minAngleD = -40;
-        this.maxAngleD = 40;
-    }
-}
-
-class Point {
+class PointBase {
+    x;
+    y;
     constructor(x, y) {
         this.x = x;
         this.y = y;
     }
-
-    getDistance (a, b) {
-        return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
-    }
-
-    add(a) {
-        return new Point(this.x + a.x, this.y + a.y);
-    }
-
-    getAngleDeg(q) {
-        return (180 / Math.PI) * Math.atan2(q.y - this.y, q.x - this.x);
-    }
 }
 
-class EBs {
+class EBsBase {
+    geometry;
+    t1;
+    t2;
+    duration;
+    direction;
+    nEBs;
+
+    offset;
+    dutyCyle;
+    length;
+    gap;
+    dt1;
+    dt2;
+    durationMin;
+    durationMax;
+    nValidEBs;
+    Log;
+
     constructor(geometry) {
+        this.geometry = geometry;
         this.resetArrays();
         this.resetParams();
-        this.geometry = geometry;
     }
 
     resetArrays() {
@@ -60,6 +51,82 @@ class EBs {
         this.durationMax = 0;
         this.nValidEBs = 0;
         this.Log = "";
+    }
+}
+
+class TrackMTBase {
+    Points;
+    ebs;
+    nEBs;
+
+    constructor() {
+    }
+}
+
+class SpindleBase {
+    nMTs;
+    arcArray;
+
+    constructor(nAngles, nEBs) {
+        this.nMTs = nAngles;
+        this.arcArray = [];
+    }
+}
+
+class Geometry {
+    N;
+    X1;
+    Y1;
+    X2;
+    Y2;
+    Size;
+    nEBs;
+    fps;
+    Asymmetry;
+    minAngleD;
+    maxAngleD;
+
+    constructor() {
+        this.initialize();
+    }
+
+    initialize() {
+        this.N = 5;
+        this.X1 = 0;
+        this.Y1 = 74;
+        this.X2 = 299;
+        this.Y2 = 74;
+        this.Size = this.X2 - this.X1 + 1;
+        this.nEBs = 10;
+        this.fps = 8;
+        this.Asymmetry = [0, 0, 0.20, 0, 0];
+        this.minAngleD = -40;
+        this.maxAngleD = 40;
+    }
+}
+
+class Point extends PointBase {
+    constructor(x, y) {
+        super(x, y);
+    }
+
+    getDistance (a, b) {
+        return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
+    }
+
+    add(a) {
+        return new Point(this.x + a.x, this.y + a.y);
+    }
+
+    getAngleDeg(q) {
+        return (180 / Math.PI) * Math.atan2(q.y - this.y, q.x - this.x);
+    }
+}
+
+
+class EBs extends EBsBase {
+    constructor(geometry) {
+        super(geometry);
     }
 
     append(t1, t2) {
@@ -157,8 +224,9 @@ class EBs {
     }
 }
 
-class TrackMT {
+class TrackMT extends TrackMTBase {
     constructor(thetaDeg, nEBs, geometry) {
+        super();
         const P1 = new Point(geometry.X1, geometry.Y1);
         const P2 = new Point(geometry.X2, geometry.Y2);
         this.Points = [];
@@ -218,10 +286,9 @@ class TrackMT {
     }
 }
 
-class Spindle {
+class Spindle extends SpindleBase {
     constructor(nAngles, nEBs, geometry) {
-        this.nMTs = nAngles;
-        this.arcArray = [];
+        super(nAngles, nEBs);
         this.initializeDirectionData(geometry.minAngleD, geometry.maxAngleD, nAngles);
         for (let cntr = 0; cntr < this.nMTs; cntr++) {
             this.arcArray[cntr] = new TrackMT(this.orientations[cntr], nEBs, geometry);
