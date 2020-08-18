@@ -141,7 +141,6 @@ class TrackMTRenderer {
             this.renderEB(ctx, ebs.t1[cntr], ebs.t2[cntr], alphaEB);
         }
         ctx.strokeStyle = strokeStyleOriginal;
-        return ctx;
     }
 
     getColor(directionSign) {
@@ -157,7 +156,6 @@ class TrackMTRenderer {
         ctx.moveTo(q1.x, q1.y);
         ctx.quadraticCurveTo(qM.x, qM.y, q2.x, q2.y);
         ctx.stroke();
-        return ctx;
     }
     
     renderMT(ctx, alpha) {
@@ -166,7 +164,6 @@ class TrackMTRenderer {
         ctx.moveTo(this.trackMT.Points[0].x, this.trackMT.Points[0].y);
         ctx.quadraticCurveTo(this.trackMT.Points[1].x, this.trackMT.Points[1].y, this.trackMT.Points[2].x, this.trackMT.Points[2].y);
         ctx.stroke();
-        return ctx;
     }
 }
 
