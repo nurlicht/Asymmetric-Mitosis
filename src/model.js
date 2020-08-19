@@ -85,6 +85,7 @@ class Geometry {
     Asymmetry;
     minAngleD;
     maxAngleD;
+    asymmetryExcessParticleIndex;
 
     constructor() {
         this.initialize();
@@ -102,6 +103,16 @@ class Geometry {
         this.Asymmetry = [0, 0, 0.20, 0, 0];
         this.minAngleD = -40;
         this.maxAngleD = 40;
+        this.asymmetryExcessParticleIndex = 2;
+    }
+
+    getExcessParticles() {
+        if (this.asymmetryExcessParticleIndex >= this.Asymmetry.length) return null;
+        return this.Asymmetry[this.asymmetryExcessParticleIndex];
+    }
+
+    setExcessParticles(value) {
+        this.Asymmetry[this.asymmetryExcessParticleIndex] = value;
     }
 }
 
@@ -208,7 +219,7 @@ class EBs extends EBsBase {
 
     createEB(n) {
         this.duration[n] = 1;
-        this.direction[n] = ((Math.random() + this.geometry.Asymmetry[2]) > 0.5)? 1:-1;
+        this.direction[n] = ((Math.random() + this.geometry.getExcessParticles()) > 0.5)? 1:-1;
         const Alpha = 0.8;
         if (this.direction[n] > 0) {
             const minT1 = this.getMinT1();

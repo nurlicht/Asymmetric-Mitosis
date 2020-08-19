@@ -1,3 +1,19 @@
+class ControllerConstants {
+    static POSITION_STEP = 10;
+    static NORMALIZED_SIZE_STEP = 0.5;
+    static EXCESS_PARTICLES_MAX = 0.5;
+    static EXCESS_PARTICLES_MIN = - 0.5;
+    static EXCESS_PARTICLES_STEP = 0.02;
+    static ALPHA_MT = 0.2;
+    static ALPHA_EB = 1.0;
+    static RED_COLOR = "#FF3300";
+    static BLUE_COLOR = "#00BBFF";
+    static SECOND_IN_MILLISECONDS = 1000;
+    static NUMBER_OF_TRACKS = 'number-of-tracks';
+    static EXCESS_PARTICLES_LEFT_TO_RIGHT = 'excess-particles-left-to-right';
+    static ASYMMETRY_PARTICLE_INDEX = 2;
+}
+
 class AnimatorBase {
     view;
     spindle;
@@ -27,8 +43,8 @@ class Controller extends ControllerBase {
     }
 
     setParams() {
-        this.positionStep = 10;
-        this.sizeStep = 0.5 * this.positionStep;
+        this.positionStep = ControllerConstants.POSITION_STEP;
+        this.sizeStep = ControllerConstants.NORMALIZED_SIZE_STEP * this.positionStep;
     }
     
     incN() {
@@ -123,12 +139,18 @@ class Controller extends ControllerBase {
     }
 
     incFractionEBs() {
-        this.geometry.Asymmetry[2] = Math.min(0.5, this.geometry.Asymmetry[2] + 0.02);
+        this.geometry.setExcessParticles(Math.min(
+            ControllerConstants.EXCESS_PARTICLES_MAX,
+            this.geometry.getExcessParticles() + ControllerConstants.EXCESS_PARTICLES_STEP
+        ));
         this.update();
     }
 
     decFractionEBs() {
-        this.geometry.Asymmetry[2] = Math.max(-0.5, this.geometry.Asymmetry[2] - 0.02);
+        this.geometry.setExcessParticles(Math.max(
+            ControllerConstants.EXCESS_PARTICLES_MIN,
+            this.geometry.getExcessParticles() - ControllerConstants.EXCESS_PARTICLES_STEP
+        ));
         this.update();
     }
 }
@@ -142,17 +164,16 @@ class SpindleRenderer {
 class TrackMTRenderer {
     constructor(trackMT) {
         this.trackMT = trackMT;
-        this.RED_COLOR = "#FF3300";
-        this.BLUE_COLOR = "#00BBFF";
     }
 
     static render(ctx, trackMT) {
         return new TrackMTRenderer(trackMT).render(ctx);
     }
 
+
     render(ctx) {
-        const alphaMT = 0.2;
-        const alphaEB = 1.0;
+        const alphaMT = ControllerConstants.ALPHA_MT;
+        const alphaEB = ControllerConstants.ALPHA_EB;
         this.renderMT(ctx, alphaMT);
         const strokeStyleOriginal = ctx.strokeStyle;
         const ebs = this.trackMT.ebs;
@@ -165,7 +186,10 @@ class TrackMTRenderer {
     }
 
     getColor(directionSign) {
-        return (directionSign > 0)? this.RED_COLOR:this.BLUE_COLOR;
+        return (directionSign > 0)?
+            ControllerConstants.RED_COLOR:
+            ControllerConstants.BLUE_COLOR
+        ;
     }
     
     renderEB(ctx, t1, t2, alpha) {
@@ -205,16 +229,20 @@ class Animator extends AnimatorBase {
 
     getTimerID(ctx, plot, geometry) {
         const callback = this.drawAll.bind(this, this);
-        return setInterval(callback, 1000 / geometry.fps);
+        return setInterval(callback, ControllerConstants.SECOND_IN_MILLISECONDS / geometry.fps);
     }
 
     getSpindle(geometry) {
         return new Spindle(geometry.N, geometry.nEBs, geometry);
     }
 
+
     showValues(geometry) {
-        Utilities.d$V("nMT", geometry.N);
-        Utilities.d$V("FractionEBs", Utilities.limitDP(geometry.Asymmetry[2]));
+        Utilities.d$V(ControllerConstants.NUMBER_OF_TRACKS, geometry.N);
+        Utilities.d$V(
+            ControllerConstants.EXCESS_PARTICLES_LEFT_TO_RIGHT,
+            Utilities.limitDP(geometry.getExcessParticles())
+        );
     }
 
     drawAll(instance) {
