@@ -13,7 +13,8 @@ class ViewConstants {
     static PLOT_LABEL_FILL_STYLE = '#FFCC66';
     static CANVAS_WIDTH = 300;
     static CAVAS_HEIGHT = 150;
-    static LINE_WIDTH = 2;
+    static LINE_WIDTH_KEY = 'lineWidth';
+    static LINE_WIDTH_VALUE = 2;
     static BLACK_COLOR = '#000000';
     static WHITE_COLOR = '#FFFFFF';
     static NEW_LINE = '<br />';
@@ -218,7 +219,7 @@ class View {
     plot;
     
     constructor() {
-        this.getMitosisCanvasContext().lineWidth = ViewConstants.LINE_WIDTH;
+        this.getMitosisCanvasContext()[ViewConstants.LINE_WIDTH_KEY] = ViewConstants.LINE_WIDTH_VALUE;
         const plotCanvas = Utilities.d$(ViewConstants.PLOT_CANVAS_ID);
         this.plot = new Plot(plotCanvas);
     }
