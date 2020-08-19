@@ -1,31 +1,47 @@
+class Constants {
+    static mitosisCanvasId = 'mitosis-canvas';
+    static canvasContextId = '2d';
+    static plotCanvasId = 'plot-canvas';
+    static lineWidth = 2;
+    static BLACK_COLOR = "#000000";
+    static WHITE_COLOR = "#FFFFFF";
+}
+
 class Utilities {
-    d$V(x, v) {
+    static d$V(x, v) {
         this.d$(x).innerHTML = v;
     }
 
-    d$(x) {
+    static d$(x) {
         return document.getElementById(x);
     }
 
-    Log(x) {
+    static Log(x) {
         this.d$V("Log", x + "<br />" + this.d$("Log").innerHTML);
     }
 
-    limitDP(x) {
+    static limitDP(x) {
         if (x.toString().includes(".")) {
             x = (Math.round(100 * x) / 100).toString();
             if (x.includes(".")) x = x.substring(0, Math.min(x.length, x.indexOf(".") + 3));
         }
         return x.toString();
-      }
     }
+
+    static initializeCanvasContext(ctx) {
+        ctx.fillStyle = Constants.BLACK_COLOR;
+        ctx.fillRect(0, 0, 300, 150);
+        ctx.fillStyle = Constants.WHITE_COLOR;
+        ctx.strokeStyle= Constants.WHITE_COLOR;
+    }
+}
 
 class Plot {
     constructor(canvasPlot) {
         this.enforceCircularSymmetryFlag = true;
         this.shiftQuarterFlag = false;
         this.originOffset = 10;
-        this.ctx = canvasPlot.getContext("2d");
+        this.ctx = canvasPlot.getContext(Constants.canvasContextId);
         this.canvasWidth = canvasPlot.width;
         this.canvasHeight = canvasPlot.height;
         this.canvasXLimits = [this.originOffset, this.canvasWidth - 1 - this.originOffset];
@@ -41,15 +57,6 @@ class Plot {
     }
 
     setColors() {
-        this.BLACK_COLOR = "#000000";
-        this.WHITE_COLOR = "#FFFFFF";
-    }
-
-    initialize(ctx) {
-        ctx.fillStyle = this.BLACK_COLOR;
-        ctx.fillRect(0, 0, 300, 150);
-        ctx.fillStyle = this.WHITE_COLOR;
-        ctx.strokeStyle=this.WHITE_COLOR;
     }
 
     resetXY() {
@@ -126,7 +133,7 @@ class Plot {
     plotXYL() {
         const N = this.x.length;
         if (N < 2) return;
-        this.initialize(this.ctx);
+        Utilities.initializeCanvasContext(this.ctx);
         this.ctx.beginPath();
         this.ctx.moveTo(this.x[0], this.y[0]);
         for (let cntr = 1; cntr < N; cntr++) {
@@ -194,23 +201,31 @@ class Plot {
 }
 
 class View {
+    plot;
+    
     constructor() {
-        const utilities = new Utilities();
-        this.myCanvas = utilities.d$("myCanvas");
-        this.ctx = this.myCanvas.getContext("2d");
-        this.ctx.lineWidth = 2;
+        this.getMitosisCanvasContext().lineWidth = Constants.lineWidth;
+        const plotCanvas = Utilities.d$(Constants.plotCanvasId);
+        this.plot = new Plot(plotCanvas);
+    }
 
-        const cPlot = utilities.d$("plotCanvas");
-        this.plot = new Plot(cPlot);
+    getMitosisCanvas() {
+        return Utilities.d$(Constants.mitosisCanvasId);
+    }
+
+    getMitosisCanvasContext() {
+        return this.getMitosisCanvas().getContext(Constants.canvasContextId);
     }
 
     reset() {
         this.plot.resetXY();
         this.initialize(this.plot.ctx);
-        this.initialize(this.ctx);
+        this.initialize();
     }
 
     initialize(ctx) {
-        this.plot.initialize(ctx? ctx:this.ctx);
+        const ctx2 = ctx? ctx:this.getMitosisCanvasContext();
+        Utilities.initializeCanvasContext(ctx2);
     }
+
 }

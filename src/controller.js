@@ -199,8 +199,8 @@ class Animator extends AnimatorBase {
         this.view.reset();
         this.spindle = this.getSpindle(geometry);
         this.showValues(geometry);
-        SpindleRenderer.render(this.view.ctx, this.spindle);
-        this.timerID = this.getTimerID(this.view.ctx, this.view.plot, geometry);
+        SpindleRenderer.render(this.view.getMitosisCanvasContext(), this.spindle);
+        this.timerID = this.getTimerID(this.view.getMitosisCanvasContext(), this.view.plot, geometry);
     }
 
     getTimerID(ctx, plot, geometry) {
@@ -213,15 +213,14 @@ class Animator extends AnimatorBase {
     }
 
     showValues(geometry) {
-        let utilities = new Utilities();
-        utilities.d$V("nMT", geometry.N);
-        utilities.d$V("FractionEBs", utilities.limitDP(geometry.Asymmetry[2]));
+        Utilities.d$V("nMT", geometry.N);
+        Utilities.d$V("FractionEBs", Utilities.limitDP(geometry.Asymmetry[2]));
     }
 
     drawAll(instance) {
         instance.view.initialize();
         instance.spindle.update();
-        SpindleRenderer.render(instance.view.ctx, instance.spindle);
+        SpindleRenderer.render(instance.view.getMitosisCanvasContext(), instance.spindle);
         instance.view.plot.draw(instance.spindle.orientations, instance.spindle.nOrientations);
     }
 
