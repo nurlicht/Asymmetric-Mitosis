@@ -1,6 +1,4 @@
 class ControllerConstants {
-    static POSITION_STEP = 10;
-    static NORMALIZED_SIZE_STEP = 0.5;
     static EXCESS_PARTICLES_MAX = 0.5;
     static EXCESS_PARTICLES_MIN = - 0.5;
     static EXCESS_PARTICLES_STEP = 0.02;
@@ -39,14 +37,8 @@ class ControllerBase {
 class Controller extends ControllerBase {
     constructor(geometry, update) {
         super(geometry, update);
-        this.setParams();
     }
 
-    setParams() {
-        this.positionStep = ControllerConstants.POSITION_STEP;
-        this.sizeStep = ControllerConstants.NORMALIZED_SIZE_STEP * this.positionStep;
-    }
-    
     incN() {
         ++this.geometry.N;
         this.update();
@@ -57,85 +49,6 @@ class Controller extends ControllerBase {
             --this.geometry.N;
             this.update();
         }
-    }
-
-    incSize() {
-        this.geometry.X1 -= this.sizeStep;
-        this.geometry.X2 += this.sizeStep;
-        this.geometry.Size = this.geometry.X2 - this.geometry.X1 + 1;
-        this.update();
-    }
-
-    decSize() {
-        this.geometry.X1 += this.sizeStep;
-        this.geometry.X2 -= this.sizeStep;
-        if (this.geometry.X1 > this.geometry.X2) {
-            this.geometry.X1 += this.sizeStep;
-            this.geometry.X2 -= this.sizeStep;
-            return;
-        }
-        this.geometry.Size = this.geometry.X2 - this.geometry.X1 + 1;
-        this.update();
-    }
-
-    incX1() {
-        this.geometry.X1 += this.positionStep;
-        this.update();
-    }
-
-    decX1() {
-        geomrtry.X1 -= this.positionStep;
-        this.update();
-    }
-
-    incY1() {
-        this.geometry.Y1 += this.positionStep;
-        this.update();
-    }
-
-    decY1() {
-        this.geometry.Y1 -= this.positionStep;
-        this.update();
-    }
-
-    incX2() {
-        this.geometry.X2 += this.positionStep;
-        this.update();
-    }
-    
-    decX2() {
-        this.geometry.X2 -= this.positionStep;
-        this.update();
-    }
-
-    incY2() {
-        this.geometry.Y2 += this.positionStep;
-        this.update();
-    }
-
-    decY2() {
-        this.geometry.Y2 -= this.positionStep;
-        this.update();
-    }
-
-    incNEBs() {
-        ++this.geometry.nEBs;
-        this.update();
-    }
-
-    decNEBs() {
-        --this.geometry.nEBs;
-        this.update();
-    }
-
-    incFPS() {
-        ++this.geometry.fps;
-        this.update();
-    }
-
-    decFPS() {
-        --this.geometry.fps;
-        this.update();
     }
 
     incFractionEBs() {
@@ -252,11 +165,10 @@ class Animator extends AnimatorBase {
         instance.view.plot.draw(instance.spindle.orientations, instance.spindle.nOrientations);
     }
 
-    static create() {
+    static createController() {
         const geometry = new Geometry();
         const animator = new Animator(geometry, new View());
         const update = ()=> animator.reset(geometry);
-        animator.controller = new Controller(geometry, update);
-        return animator;
+        return new Controller(geometry, update);
     }
 }
