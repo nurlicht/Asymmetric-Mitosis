@@ -1,7 +1,28 @@
-class Controller {
+class AnimatorBase {
+    view;
+    spindle;
+    timeID;
+
+    constructor(view) {
+        this.view = view;
+    }
+}
+
+class ControllerBase {
+    geometry;
+    update;
+    positionStep;
+    sizeStep;
+
     constructor(geometry, update) {
         this.geometry = geometry;
         this.update = update;
+    }
+}
+
+class Controller extends ControllerBase {
+    constructor(geometry, update) {
+        super(geometry, update);
         this.setParams();
     }
 
@@ -167,9 +188,9 @@ class TrackMTRenderer {
     }
 }
 
-class Animator {
+class Animator extends AnimatorBase {
     constructor(geometry, view) {
-        this.view = view;
+        super(view);
         this.reset(geometry);
     }
 
