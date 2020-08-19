@@ -20,12 +20,12 @@ class ViewConstants {
 }
 
 class Utilities {
-    static d$V(x, v) {
-        Utilities.d$(x).innerHTML = v;
-    }
-
     static d$(x) {
         return document.getElementById(x);
+    }
+
+    static d$V(x, v) {
+        Utilities.d$(x).innerHTML = v;
     }
 
     static limitDP(x) {
