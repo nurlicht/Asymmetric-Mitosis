@@ -1,22 +1,26 @@
 class ViewConstants {
-    static MITOSIS_CANVAS_ID = 'mitosis-canvas';
+    static CANVAS_WIDTH = 300;
+    static CAVAS_HEIGHT = 150;
     static CANVAS_CONTEXT_ID = '2d';
+    static MITOSIS_CANVAS_ID = 'mitosis-canvas';
     static PLOT_CANVAS_ID = 'plot-canvas';
+
     static PLOT_ORIGIN_OFFSET = 10;
     static PLOT_MAX_LENGTH = 1000;
     static PLOT_TEXT_FONT = '15px Arial';
-    static PLOT_TEXT_FILL_STYLE = '#88FFFF';
     static PLOT_TEXT_STRING = 'Orientation Histogram';
     static PLOT_TEXT_POSITION_X = 90; 
     static PLOT_TEXT_POSITION_Y = 15; 
     static PLOT_LABEL_FONT = '10px Arial';
+    static PLOT_TEXT_FILL_STYLE = '#88FFFF';
     static PLOT_LABEL_FILL_STYLE = '#FFCC66';
-    static CANVAS_WIDTH = 300;
-    static CAVAS_HEIGHT = 150;
-    static LINE_WIDTH_KEY = 'lineWidth';
-    static LINE_WIDTH_VALUE = 2;
+
     static BLACK_COLOR = '#000000';
     static WHITE_COLOR = '#FFFFFF';
+
+    static LINE_WIDTH_KEY = 'lineWidth';
+    static LINE_WIDTH_VALUE = 2;
+
     static NEW_LINE = '<br />';
 }
 
