@@ -1,15 +1,28 @@
 class Constants {
-    static mitosisCanvasId = 'mitosis-canvas';
-    static canvasContextId = '2d';
-    static plotCanvasId = 'plot-canvas';
-    static lineWidth = 2;
-    static BLACK_COLOR = "#000000";
-    static WHITE_COLOR = "#FFFFFF";
+    static MITOSIS_CANVAS_ID = 'mitosis-canvas';
+    static CANVAS_CONTEXT_ID = '2d';
+    static PLOT_CANVAS_ID = 'plot-canvas';
+    static PLOT_ORIGIN_OFFSET = 10;
+    static PLOT_MAX_LENGTH = 1000;
+    static PLOT_TEXT_FONT = '15px Arial';
+    static PLOT_TEXT_FILL_STYLE = '#88FFFF';
+    static PLOT_TEXT_STRING = 'Orientation Histogram';
+    static PLOT_TEXT_POSITION_X = 90; 
+    static PLOT_TEXT_POSITION_Y = 15; 
+    static PLOT_LABEL_FONT = '10px Arial';
+    static PLOT_LABEL_FILL_STYLE = '#FFCC66';
+    static CANVAS_WIDTH = 300;
+    static CAVAS_HEIGHT = 150;
+    static LINE_WIDTH = 2;
+    static BLACK_COLOR = '#000000';
+    static WHITE_COLOR = '#FFFFFF';
+    static LOG_ID = 'Log';
+    static NEW_LINE = '<br />';
 }
 
 class Utilities {
     static d$V(x, v) {
-        this.d$(x).innerHTML = v;
+        Utilities.d$(x).innerHTML = v;
     }
 
     static d$(x) {
@@ -17,20 +30,24 @@ class Utilities {
     }
 
     static Log(x) {
-        this.d$V("Log", x + "<br />" + this.d$("Log").innerHTML);
+        Utilities.d$V(
+            Constants.LOG_ID,
+            x + Constants.NEW_LINE + Utilities.d$(Constants.LOG_ID).innerHTML
+        );
     }
 
     static limitDP(x) {
-        if (x.toString().includes(".")) {
+        const dot = '.';
+        if (x.toString().includes(dot)) {
             x = (Math.round(100 * x) / 100).toString();
-            if (x.includes(".")) x = x.substring(0, Math.min(x.length, x.indexOf(".") + 3));
+            if (x.includes(dot)) x = x.substring(0, Math.min(x.length, x.indexOf(dot) + 3));
         }
         return x.toString();
     }
 
     static initializeCanvasContext(ctx) {
         ctx.fillStyle = Constants.BLACK_COLOR;
-        ctx.fillRect(0, 0, 300, 150);
+        ctx.fillRect(0, 0, Constants.CANVAS_WIDTH, Constants.CAVAS_HEIGHT);
         ctx.fillStyle = Constants.WHITE_COLOR;
         ctx.strokeStyle= Constants.WHITE_COLOR;
     }
@@ -40,8 +57,8 @@ class Plot {
     constructor(canvasPlot) {
         this.enforceCircularSymmetryFlag = true;
         this.shiftQuarterFlag = false;
-        this.originOffset = 10;
-        this.ctx = canvasPlot.getContext(Constants.canvasContextId);
+        this.originOffset = Constants.PLOT_ORIGIN_OFFSET;
+        this.ctx = canvasPlot.getContext(Constants.CANVAS_CONTEXT_ID);
         this.canvasWidth = canvasPlot.width;
         this.canvasHeight = canvasPlot.height;
         this.canvasXLimits = [this.originOffset, this.canvasWidth - 1 - this.originOffset];
@@ -66,7 +83,7 @@ class Plot {
         this.pMax = 0;
         this.qMin = 0;
         this.qMax = 0;
-        this.maxLength = 1000;
+        this.maxLength = Constants.PLOT_MAX_LENGTH;
     }
 
     draw(p, q) {
@@ -144,11 +161,15 @@ class Plot {
     }
 
     addLimits() {
-        this.ctx.font = "15px Arial";
-        this.ctx.fillStyle = "#88FFFF";
-        this.ctx.fillText("Orientation Histogram", 90, 15);
-        this.ctx.font = "10px Arial";
-        this.ctx.fillStyle = "#FFCC66";
+        this.ctx.font = Constants.PLOT_TEXT_FONT;
+        this.ctx.fillStyle = Constants.PLOT_TEXT_FILL_STYLE;
+        this.ctx.fillText(
+            Constants.PLOT_TEXT_STRING,
+            Constants.PLOT_TEXT_POSITION_X,
+            Constants.PLOT_TEXT_POSITION_Y
+        );
+        this.ctx.font = Constants.PLOT_LABEL_FONT;
+        this.ctx.fillStyle = Constants.PLOT_LABEL_FILL_STYLE;
         this.ctx.fillText(this.limitDP(this.pMin), this.origin.x + this.originOffset, this.origin.y + 1 * this.originOffset);
         this.ctx.fillText(this.limitDP(this.pMax), this.canvasXLimits[1] - 2 * this.originOffset, this.origin.y + 1 * this.originOffset);
         this.ctx.fillText(this.limitDP(this.qMin), this.origin.x - this.originOffset, this.origin.y - this.originOffset);
@@ -156,11 +177,12 @@ class Plot {
     }
 
     limitDP(x) {
+        const dot = '.';
         const xString = x.toString();
-        if (!xString.includes(".")) return xString;
+        if (!xString.includes(dot)) return xString;
         x = (Math.round(100 * x) / 100).toString();
-        if (x.includes(".")) {
-            x = x.substring(0, Math.min(x.length, x.indexOf(".") + 3));
+        if (x.includes(dot)) {
+            x = x.substring(0, Math.min(x.length, x.indexOf(dot) + 3));
         }
         return x;
     }
@@ -204,17 +226,17 @@ class View {
     plot;
     
     constructor() {
-        this.getMitosisCanvasContext().lineWidth = Constants.lineWidth;
-        const plotCanvas = Utilities.d$(Constants.plotCanvasId);
+        this.getMitosisCanvasContext().lineWidth = Constants.LINE_WIDTH;
+        const plotCanvas = Utilities.d$(Constants.PLOT_CANVAS_ID);
         this.plot = new Plot(plotCanvas);
     }
 
     getMitosisCanvas() {
-        return Utilities.d$(Constants.mitosisCanvasId);
+        return Utilities.d$(Constants.MITOSIS_CANVAS_ID);
     }
 
     getMitosisCanvasContext() {
-        return this.getMitosisCanvas().getContext(Constants.canvasContextId);
+        return this.getMitosisCanvas().getContext(Constants.CANVAS_CONTEXT_ID);
     }
 
     reset() {
@@ -227,5 +249,4 @@ class View {
         const ctx2 = ctx? ctx:this.getMitosisCanvasContext();
         Utilities.initializeCanvasContext(ctx2);
     }
-
 }
