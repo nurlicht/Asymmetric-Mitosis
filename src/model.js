@@ -24,7 +24,6 @@ class EBsBase {
     durationMin;
     durationMax;
     nValidEBs;
-    Log;
 
     constructor(geometry) {
         this.geometry = geometry;
@@ -50,7 +49,6 @@ class EBsBase {
         this.durationMin = 0;
         this.durationMax = 0;
         this.nValidEBs = 0;
-        this.Log = "";
     }
 }
 

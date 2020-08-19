@@ -16,7 +16,6 @@ class ViewConstants {
     static LINE_WIDTH = 2;
     static BLACK_COLOR = '#000000';
     static WHITE_COLOR = '#FFFFFF';
-    static LOG_ID = 'Log';
     static NEW_LINE = '<br />';
 }
 
@@ -27,13 +26,6 @@ class Utilities {
 
     static d$(x) {
         return document.getElementById(x);
-    }
-
-    static Log(x) {
-        Utilities.d$V(
-            ViewConstants.LOG_ID,
-            x + ViewConstants.NEW_LINE + Utilities.d$(ViewConstants.LOG_ID).innerHTML
-        );
     }
 
     static limitDP(x) {
