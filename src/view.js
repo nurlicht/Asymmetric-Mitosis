@@ -223,17 +223,25 @@ class View {
     plot;
     
     constructor() {
-        this.getMitosisCanvasContext()[ViewConstants.LINE_WIDTH_KEY] = ViewConstants.LINE_WIDTH_VALUE;
-        const plotCanvas = Utilities.d$(ViewConstants.PLOT_CANVAS_ID);
+        this.setPlot();
+        this.setCanvasContextLineWidth(ViewConstants.MITOSIS_CANVAS_ID);
+    }
+
+    setPlot() {
+        const plotCanvas = this.getCanvas(ViewConstants.PLOT_CANVAS_ID);
         this.plot = new Plot(plotCanvas);
     }
 
-    getMitosisCanvas() {
-        return Utilities.d$(ViewConstants.MITOSIS_CANVAS_ID);
+    setCanvasContextLineWidth(canvasId) {
+        this.getCanvasContext(canvasId)[ViewConstants.LINE_WIDTH_KEY] = ViewConstants.LINE_WIDTH_VALUE;
     }
 
-    getMitosisCanvasContext() {
-        return this.getMitosisCanvas().getContext(ViewConstants.CANVAS_CONTEXT_ID);
+    getCanvasContext(canvasId) {
+        return this.getCanvas(canvasId).getContext(ViewConstants.CANVAS_CONTEXT_ID);
+    }
+
+    getCanvas(canvasId) {
+        return Utilities.d$(canvasId);
     }
 
     reset() {
