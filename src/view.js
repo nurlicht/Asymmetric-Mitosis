@@ -1,4 +1,4 @@
-class Constants {
+class ViewConstants {
     static MITOSIS_CANVAS_ID = 'mitosis-canvas';
     static CANVAS_CONTEXT_ID = '2d';
     static PLOT_CANVAS_ID = 'plot-canvas';
@@ -31,8 +31,8 @@ class Utilities {
 
     static Log(x) {
         Utilities.d$V(
-            Constants.LOG_ID,
-            x + Constants.NEW_LINE + Utilities.d$(Constants.LOG_ID).innerHTML
+            ViewConstants.LOG_ID,
+            x + ViewConstants.NEW_LINE + Utilities.d$(ViewConstants.LOG_ID).innerHTML
         );
     }
 
@@ -46,10 +46,10 @@ class Utilities {
     }
 
     static initializeCanvasContext(ctx) {
-        ctx.fillStyle = Constants.BLACK_COLOR;
-        ctx.fillRect(0, 0, Constants.CANVAS_WIDTH, Constants.CAVAS_HEIGHT);
-        ctx.fillStyle = Constants.WHITE_COLOR;
-        ctx.strokeStyle= Constants.WHITE_COLOR;
+        ctx.fillStyle = ViewConstants.BLACK_COLOR;
+        ctx.fillRect(0, 0, ViewConstants.CANVAS_WIDTH, ViewConstants.CAVAS_HEIGHT);
+        ctx.fillStyle = ViewConstants.WHITE_COLOR;
+        ctx.strokeStyle= ViewConstants.WHITE_COLOR;
     }
 }
 
@@ -57,8 +57,8 @@ class Plot {
     constructor(canvasPlot) {
         this.enforceCircularSymmetryFlag = true;
         this.shiftQuarterFlag = false;
-        this.originOffset = Constants.PLOT_ORIGIN_OFFSET;
-        this.ctx = canvasPlot.getContext(Constants.CANVAS_CONTEXT_ID);
+        this.originOffset = ViewConstants.PLOT_ORIGIN_OFFSET;
+        this.ctx = canvasPlot.getContext(ViewConstants.CANVAS_CONTEXT_ID);
         this.canvasWidth = canvasPlot.width;
         this.canvasHeight = canvasPlot.height;
         this.canvasXLimits = [this.originOffset, this.canvasWidth - 1 - this.originOffset];
@@ -83,7 +83,7 @@ class Plot {
         this.pMax = 0;
         this.qMin = 0;
         this.qMax = 0;
-        this.maxLength = Constants.PLOT_MAX_LENGTH;
+        this.maxLength = ViewConstants.PLOT_MAX_LENGTH;
     }
 
     draw(p, q) {
@@ -161,15 +161,15 @@ class Plot {
     }
 
     addLimits() {
-        this.ctx.font = Constants.PLOT_TEXT_FONT;
-        this.ctx.fillStyle = Constants.PLOT_TEXT_FILL_STYLE;
+        this.ctx.font = ViewConstants.PLOT_TEXT_FONT;
+        this.ctx.fillStyle = ViewConstants.PLOT_TEXT_FILL_STYLE;
         this.ctx.fillText(
-            Constants.PLOT_TEXT_STRING,
-            Constants.PLOT_TEXT_POSITION_X,
-            Constants.PLOT_TEXT_POSITION_Y
+            ViewConstants.PLOT_TEXT_STRING,
+            ViewConstants.PLOT_TEXT_POSITION_X,
+            ViewConstants.PLOT_TEXT_POSITION_Y
         );
-        this.ctx.font = Constants.PLOT_LABEL_FONT;
-        this.ctx.fillStyle = Constants.PLOT_LABEL_FILL_STYLE;
+        this.ctx.font = ViewConstants.PLOT_LABEL_FONT;
+        this.ctx.fillStyle = ViewConstants.PLOT_LABEL_FILL_STYLE;
         this.ctx.fillText(this.limitDP(this.pMin), this.origin.x + this.originOffset, this.origin.y + 1 * this.originOffset);
         this.ctx.fillText(this.limitDP(this.pMax), this.canvasXLimits[1] - 2 * this.originOffset, this.origin.y + 1 * this.originOffset);
         this.ctx.fillText(this.limitDP(this.qMin), this.origin.x - this.originOffset, this.origin.y - this.originOffset);
@@ -226,17 +226,17 @@ class View {
     plot;
     
     constructor() {
-        this.getMitosisCanvasContext().lineWidth = Constants.LINE_WIDTH;
-        const plotCanvas = Utilities.d$(Constants.PLOT_CANVAS_ID);
+        this.getMitosisCanvasContext().lineWidth = ViewConstants.LINE_WIDTH;
+        const plotCanvas = Utilities.d$(ViewConstants.PLOT_CANVAS_ID);
         this.plot = new Plot(plotCanvas);
     }
 
     getMitosisCanvas() {
-        return Utilities.d$(Constants.MITOSIS_CANVAS_ID);
+        return Utilities.d$(ViewConstants.MITOSIS_CANVAS_ID);
     }
 
     getMitosisCanvasContext() {
-        return this.getMitosisCanvas().getContext(Constants.CANVAS_CONTEXT_ID);
+        return this.getMitosisCanvas().getContext(ViewConstants.CANVAS_CONTEXT_ID);
     }
 
     reset() {
