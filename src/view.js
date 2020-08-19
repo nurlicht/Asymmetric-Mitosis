@@ -244,6 +244,10 @@ class View {
         return Utilities.d$(canvasId);
     }
 
+    getMitosisCanvasContext() {
+        return this.getCanvasContext(ViewConstants.MITOSIS_CANVAS_ID);
+    }
+
     reset() {
         this.plot.resetXY();
         this.initialize(this.plot.ctx);
