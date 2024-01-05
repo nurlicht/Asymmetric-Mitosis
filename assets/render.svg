@@ -1,7 +1,8 @@
 <svg width="400" height="600" xmlns="http://www.w3.org/2000/svg">
 	<foreignObject  width="400" height="600">
 		<div xmlns="http://www.w3.org/1999/xhtml">
-			<embed type="text/html" src="./AsymmMitosis.html"  width="400" height="600" />
+			<embed type="text/html" src="../src/html/AsymmMitosis.html"  width="400" height="600">
+			</embed>
 		</div>
 	</foreignObject>
 </svg>
