@@ -8,8 +8,11 @@ The asymmetry of this process <i>in the sense of the total numbers emerging from
 Such videos provide a realistic and controllable test case for evaluation of the results obtained by image analysis programs.
 
 ### Execution
- - HTML: Open the file [AsymmMitosis.html](./src/html/AsymmMitosis.html) with a web-browser (No server is required).
- - Interactive image: Open the file [render.svg](./assets//render.svg) with a SVG-renderer.
+ - Locally
+   - HTML: Open the file [AsymmMitosis.html](./src/html/AsymmMitosis.html) with a web-browser (No server is required), or
+   - Interactive image: Open the file [render.svg](./assets//render.svg) with a SVG-renderer.
+- GitHub Preview
+    - https://htmlpreview.github.io/?https://github.com/nurlicht/Asymmetric-Mitosis/blob/master/src/html/AsymmMitosis.html
 
 ### Screenshot
 <p align = "center">
